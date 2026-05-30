@@ -1,4 +1,4 @@
-package com.example.pc01movileschang24100033luza24100225.presentation.pantalla
+package com.example.pc01movileschang24100033luza24100225.presentation.catalogo
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
