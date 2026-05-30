@@ -3,24 +3,23 @@ package com.example.pc01movileschang24100033luza24100225.presentation.catalogo
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBar
-import androidx.compose.ui.unit.sp
+
+private val TravelBlue = Color(0xFF1565C0)
+private val TravelBackground = Color(0xFFF6F8FB)
 
 data class Destination(
     val pais: String,
@@ -72,14 +71,26 @@ fun DestinationCatalogScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Catálogo de Destinos Turísticos") },
+                title = {
+                    Text(
+                        "Catálogo de Destinos",
+                        fontWeight = FontWeight.Bold,
+                        color = TravelBlue
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Text("←", fontSize = 20.sp)
+                        Icon(
+                            Icons.Default.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = TravelBlue
+                        )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
             )
-        }
+        },
+        containerColor = TravelBackground
     ) { paddingValues ->
 
         LazyColumn(
@@ -89,35 +100,62 @@ fun DestinationCatalogScreen(navController: NavController) {
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            item { Spacer(modifier = Modifier.height(4.dp)) }
 
             items(destinations) { destination ->
-                DestinationCard(destination)
+                DestinationCard(destination)  // ← ahora sí la encuentra
             }
 
             item {
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = "Cantidad total de destinos: $totalDestinos",
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "Suma acumulada de costos: S/ ${"%.2f".format(sumaCostos)}",
-                        fontWeight = FontWeight.Bold
-                    )
+                Card(
+                    shape = RoundedCornerShape(18.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("Total de destinos:", color = Color.DarkGray)
+                            Text(
+                                "$totalDestinos destinos",
+                                fontWeight = FontWeight.Bold,
+                                color = TravelBlue
+                            )
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("Suma acumulada:", color = Color.DarkGray)
+                            Text(
+                                "S/ ${"%.2f".format(sumaCostos)}",
+                                fontWeight = FontWeight.Bold,
+                                color = TravelBlue
+                            )
+                        }
+                    }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
 }
 
+// ← FUERA de DestinationCatalogScreen
 @Composable
 fun DestinationCard(destination: Destination) {
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
     ) {
         Row(
             modifier = Modifier
@@ -125,27 +163,39 @@ fun DestinationCard(destination: Destination) {
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
-            AsyncImage(
-                model = destination.imagenUrl,
-                contentDescription = destination.ciudad,
-                modifier = Modifier.size(100.dp),
-                contentScale = ContentScale.Crop
-            )
-
+            Card(
+                shape = RoundedCornerShape(14.dp),
+                elevation = CardDefaults.cardElevation(0.dp)
+            ) {
+                AsyncImage(
+                    model = destination.imagenUrl,
+                    contentDescription = destination.ciudad,
+                    modifier = Modifier.size(90.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
             Spacer(modifier = Modifier.width(16.dp))
-
-            Column {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
-                    text = destination.pais,
-                    fontWeight = FontWeight.Bold
+                    destination.ciudad,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = Color(0xFF1F2937)
                 )
-
-                Text(text = destination.ciudad)
-
-                Text(
-                    text = "Costo promedio: S/ ${"%.2f".format(destination.costoPromedio)}"
-                )
+                Text(destination.pais, fontSize = 13.sp, color = Color.Gray)
+                Spacer(modifier = Modifier.height(2.dp))
+                Card(
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
+                ) {
+                    Text(
+                        text = "S/ ${"%.2f".format(destination.costoPromedio)}",
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                        color = Color(0xFF1565C0),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 13.sp
+                    )
+                }
             }
         }
     }
