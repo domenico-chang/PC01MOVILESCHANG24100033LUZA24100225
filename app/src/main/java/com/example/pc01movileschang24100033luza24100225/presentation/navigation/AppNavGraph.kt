@@ -1,0 +1,43 @@
+package com.example.pc01movileschang24100033luza24100225.presentation.navigation
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.pc01movileschang24100033luza24100225.presentation.mainScreen.MainScreen
+
+@Composable
+fun AppNavGraph() {
+
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = "main"
+    ) {
+
+        composable("main") {
+            DrawerScaffold(navController) {
+                MainScreen(navController)
+            }
+        }
+
+        composable("equipaje") {
+            //CalculadoraEquipajeScreen()
+        }
+
+        composable("presupuesto") {
+            //PresupuestoViajeScreen()
+        }
+
+        composable("destinos") {
+            //CatalogoDestinosScreen()
+        }
+
+        composable("ubicacion") {
+            //PermisoUbicacionScreen()
+        }
+    }
+}
