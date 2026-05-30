@@ -16,6 +16,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.unit.sp
 
 data class Destination(
     val pais: String,
@@ -24,6 +29,7 @@ data class Destination(
     val imagenUrl: String
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DestinationCatalogScreen(navController: NavController) {
 
@@ -63,55 +69,46 @@ fun DestinationCatalogScreen(navController: NavController) {
     val totalDestinos = destinations.size
     val sumaCostos = destinations.sumOf { it.costoPromedio }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-
-        item {
-            Text(
-                text = "Catálogo de Destinos Turísticos",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Catálogo de Destinos Turísticos") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Text("←", fontSize = 20.sp)
+                    }
+                }
             )
         }
+    ) { paddingValues ->
 
-        items(destinations) { destination ->
-            DestinationCard(destination)
-        }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
 
-        item {
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+            items(destinations) { destination ->
+                DestinationCard(destination)
+            }
 
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "Cantidad total de destinos: $totalDestinos",
-                    fontWeight = FontWeight.Bold
-                )
+            item {
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
-                Text(
-                    text = "Suma acumulada de costos: S/ ${"%.2f".format(sumaCostos)}",
-                    fontWeight = FontWeight.Bold
-                )
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Cantidad total de destinos: $totalDestinos",
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "Suma acumulada de costos: S/ ${"%.2f".format(sumaCostos)}",
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = {
-                        navController.navigate("main") {
-                            popUpTo("main") {
-                                inclusive = true
-                            }
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Volver al inicio")
-                }
             }
         }
     }

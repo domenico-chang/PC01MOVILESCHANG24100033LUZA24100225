@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.pc01movileschang24100033luza24100225.presentation.asistenciaDeUbicacion.LocationPermissionScreen
 import com.example.pc01movileschang24100033luza24100225.presentation.mainScreen.MainScreen
 import com.example.pc01movileschang24100033luza24100225.presentation.calculadora.BaggageCalculatorScreen
 import com.example.pc01movileschang24100033luza24100225.presentation.catalogo.DestinationCatalogScreen
@@ -44,7 +45,9 @@ fun AppNavGraph() {
         }
 
         composable("ubicacion") {
-            //PermisoUbicacionScreen()
+            DrawerScaffold(navController) {
+                LocationPermissionScreen(navController)
+            }
         }
     }
 }
