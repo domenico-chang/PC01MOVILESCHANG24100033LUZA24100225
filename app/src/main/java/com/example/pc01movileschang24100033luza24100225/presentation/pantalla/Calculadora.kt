@@ -1,6 +1,7 @@
 package com.example.pc01movileschang24100033luza24100225.presentation.pantalla
 
 import java.util.Locale
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -11,13 +12,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.pc01movileschang24100033luza24100225.ui.theme.PC01MOVILESCHANG24100033LUZA24100225Theme
@@ -26,31 +27,30 @@ import com.example.pc01movileschang24100033luza24100225.ui.theme.PC01MOVILESCHAN
 @Composable
 fun BaggageCalculatorScreen(navController: NavController) {
 
-    // --- ESTADOS ---
     var pesoInput by remember { mutableStateOf("") }
-    var tipoVuelo by remember { mutableStateOf("Nacional") }  // "Nacional" o "Internacional"
+    var tipoVuelo by remember { mutableStateOf("Nacional") }
     var pesoError by remember { mutableStateOf("") }
     var resultado by remember { mutableStateOf<ResultadoEquipaje?>(null) }
 
-    // Controlador para ocultar el teclado dinámicamente
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    // Función interna para encapsular la lógica del cálculo y evitar repetir código
     fun realizarCalculo() {
         resultado = null
-        // Reemplazar comas por puntos para evitar errores de casteo en regiones latinas
         val pesoLimpio = pesoInput.replace(',', '.')
 
         when {
             pesoInput.isBlank() -> {
                 pesoError = "Este campo es obligatorio"
             }
+
             pesoLimpio.toDoubleOrNull() == null -> {
                 pesoError = "Ingresa un valor numérico válido"
             }
+
             pesoLimpio.toDouble() <= 0 -> {
                 pesoError = "El peso debe ser mayor a cero"
             }
+
             else -> {
                 val peso = pesoLimpio.toDouble()
                 val limite = if (tipoVuelo == "Nacional") 23.0 else 32.0
@@ -62,7 +62,8 @@ fun BaggageCalculatorScreen(navController: NavController) {
                     tipoVuelo = tipoVuelo,
                     exceso = exceso
                 )
-                keyboardController?.hide() // Oculta el teclado al calcular con éxito
+
+                keyboardController?.hide()
             }
         }
     }
@@ -89,7 +90,6 @@ fun BaggageCalculatorScreen(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            // --- CAMPO: PESO DE LA MALETA ---
             Text(
                 text = "Peso de la maleta (kg)",
                 fontWeight = FontWeight.Medium,
@@ -100,17 +100,19 @@ fun BaggageCalculatorScreen(navController: NavController) {
                 value = pesoInput,
                 onValueChange = {
                     pesoInput = it
-                    pesoError = ""   // Limpiar error al escribir
-                    resultado = null // UX: Limpiar el resultado anterior si el usuario edita el número
+                    pesoError = ""
+                    resultado = null
                 },
                 label = { Text("Ej: 20.5") },
                 isError = pesoError.isNotEmpty(),
                 supportingText = {
                     if (pesoError.isNotEmpty()) {
-                        Text(text = pesoError, color = MaterialTheme.colorScheme.error)
+                        Text(
+                            text = pesoError,
+                            color = MaterialTheme.colorScheme.error
+                        )
                     }
                 },
-                // Se agrega ImeAction.Done para mejorar el comportamiento del teclado
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Done
@@ -122,14 +124,12 @@ fun BaggageCalculatorScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // --- SECCIÓN: TIPO DE VUELO ---
             Text(
                 text = "Tipo de vuelo",
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp
             )
 
-            // RadioButton: Nacional
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -138,17 +138,18 @@ fun BaggageCalculatorScreen(navController: NavController) {
                     selected = tipoVuelo == "Nacional",
                     onClick = {
                         tipoVuelo = "Nacional"
-                        resultado = null // Resetea el resultado para obligar a recalcular
+                        resultado = null
                     }
                 )
+
                 Spacer(modifier = Modifier.width(8.dp))
+
                 Column {
                     Text("Nacional", fontSize = 15.sp)
                     Text("Máximo 23 kg", fontSize = 12.sp, color = Color.Gray)
                 }
             }
 
-            // RadioButton: Internacional
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -157,10 +158,12 @@ fun BaggageCalculatorScreen(navController: NavController) {
                     selected = tipoVuelo == "Internacional",
                     onClick = {
                         tipoVuelo = "Internacional"
-                        resultado = null // Resetea el resultado para obligar a recalcular
+                        resultado = null
                     }
                 )
+
                 Spacer(modifier = Modifier.width(8.dp))
+
                 Column {
                     Text("Internacional", fontSize = 15.sp)
                     Text("Máximo 32 kg", fontSize = 12.sp, color = Color.Gray)
@@ -169,7 +172,6 @@ fun BaggageCalculatorScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // --- BOTÓN CALCULAR ---
             Button(
                 onClick = { realizarCalculo() },
                 modifier = Modifier
@@ -179,7 +181,6 @@ fun BaggageCalculatorScreen(navController: NavController) {
                 Text("Calcular", fontSize = 16.sp)
             }
 
-            // --- RESULTADO ---
             resultado?.let { res ->
                 Spacer(modifier = Modifier.height(8.dp))
                 HorizontalDivider()
@@ -197,7 +198,6 @@ fun BaggageCalculatorScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 if (res.exceso <= 0) {
-                    // ✅ Cumple el límite
                     Card(
                         colors = CardDefaults.cardColors(
                             containerColor = Color(0xFFDFF2DF)
@@ -211,6 +211,7 @@ fun BaggageCalculatorScreen(navController: NavController) {
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp
                             )
+
                             Text(
                                 text = "Tu maleta está dentro del peso permitido para vuelo ${res.tipoVuelo.lowercase()}.",
                                 color = Color(0xFF2E7D32)
@@ -218,7 +219,6 @@ fun BaggageCalculatorScreen(navController: NavController) {
                         }
                     }
                 } else {
-                    // ❌ Excede el límite
                     Card(
                         colors = CardDefaults.cardColors(
                             containerColor = Color(0xFFFFEBEE)
@@ -232,8 +232,15 @@ fun BaggageCalculatorScreen(navController: NavController) {
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp
                             )
+
                             Text(
-                                text = "Tu maleta supera el límite en ${String.format(Locale.getDefault(), "%.2f", res.exceso)} kg.",
+                                text = "Tu maleta supera el límite en ${
+                                    String.format(
+                                        Locale.getDefault(),
+                                        "%.2f",
+                                        res.exceso
+                                    )
+                                } kg.",
                                 color = Color(0xFFC62828)
                             )
                         }
@@ -244,7 +251,6 @@ fun BaggageCalculatorScreen(navController: NavController) {
     }
 }
 
-// --- DATA CLASS DE RESULTADO ---
 data class ResultadoEquipaje(
     val peso: Double,
     val limite: Double,
