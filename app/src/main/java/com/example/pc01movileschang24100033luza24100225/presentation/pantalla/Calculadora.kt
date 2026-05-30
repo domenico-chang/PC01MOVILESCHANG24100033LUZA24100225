@@ -1,4 +1,4 @@
-package com.example.pc01movileschang24100033luza24100225.ui.theme.pantalla
+package com.example.pc01movileschang24100033luza24100225.presentation.pantalla
 
 import java.util.Locale
 

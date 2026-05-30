@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pc01movileschang24100033luza24100225.presentation.mainScreen.MainScreen
+import com.example.pc01movileschang24100033luza24100225.presentation.pantalla.BaggageCalculatorScreen
 
 @Composable
 fun AppNavGraph() {
@@ -25,7 +26,9 @@ fun AppNavGraph() {
         }
 
         composable("equipaje") {
-            //CalculadoraEquipajeScreen()
+            DrawerScaffold(navController) {
+                BaggageCalculatorScreen(navController)
+            }
         }
 
         composable("presupuesto") {
